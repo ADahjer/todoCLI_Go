@@ -33,20 +33,23 @@ func init() {
 }
 
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "List all the todos",
-	RunE:  listTodos,
+	Use:     "list",
+	Aliases: []string{"ls", "l"},
+	Short:   "List all the todos",
+	RunE:    listTodos,
 }
 
 var addCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Add a new todo",
-	Run:   addTodo,
+	Use:     "add [--title|-t] <todo_title>",
+	Aliases: []string{"a"},
+	Short:   "Add a new todo",
+	Run:     addTodo,
 }
 
 var editCmd = &cobra.Command{
 	Use:          "edit <todo_id> [--title|-t] <new_todo_title>",
 	Short:        "Edit a todo",
+	Aliases:      []string{"e"},
 	Args:         cobra.ExactArgs(1),
 	RunE:         editTodo,
 	SilenceUsage: true,

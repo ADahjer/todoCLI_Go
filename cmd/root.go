@@ -9,11 +9,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version = "0.1"
+const version = "0.1.1"
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "todoCLI",
+	Use:   "todo",
 	Short: "A brief description of your application",
 	Long: `A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
