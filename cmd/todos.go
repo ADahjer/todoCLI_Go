@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"os"
 	"todoCLI/pkg"
 
@@ -20,6 +21,12 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 	addCmd.Flags().StringP("title", "t", "", "Title of the new todo")
 	addCmd.MarkFlagRequired("title")
+
+	rootCmd.AddCommand(editCmd)
+	editCmd.Flags().StringP("title", "t", "", "New todo title")
+	editCmd.Flags().IntP("index", "i", 0, "Index of the todo to edit")
+	editCmd.MarkFlagRequired("title")
+	editCmd.MarkFlagRequired("index")
 }
 
 var listCmd = &cobra.Command{
@@ -32,6 +39,12 @@ var addCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Add a new todo",
 	Run:   addTodo,
+}
+
+var editCmd = &cobra.Command{
+	Use:   "edit",
+	Short: "Edit a todo",
+	RunE:  editTodo,
 }
 
 func listTodos(cmd *cobra.Command, args []string) error {
@@ -55,4 +68,21 @@ func addTodo(cmd *cobra.Command, args []string) {
 	title, _ := cmd.Flags().GetString("title")
 
 	todos.Add(title)
+}
+
+func editTodo(cmd *cobra.Command, args []string) error {
+	title, _ := cmd.Flags().GetString("title")
+	id, _ := cmd.Flags().GetInt("index")
+
+	if title == "" {
+		return errors.New("the title cannot be empty")
+	}
+
+	if err := todos.ValidateIndex(id); err != nil {
+		return err
+	}
+
+	todos.Edit(id, title)
+
+	return nil
 }
