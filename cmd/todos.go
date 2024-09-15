@@ -28,6 +28,8 @@ func init() {
 	editCmd.MarkFlagRequired("title")
 
 	rootCmd.AddCommand(toggleCmd)
+
+	rootCmd.AddCommand(deleteCmd)
 }
 
 var listCmd = &cobra.Command{
@@ -55,6 +57,15 @@ var toggleCmd = &cobra.Command{
 	Short:        "Toggle the status of completion of a todo",
 	Args:         cobra.ExactArgs(1),
 	RunE:         toggleTodo,
+	SilenceUsage: true,
+}
+
+var deleteCmd = &cobra.Command{
+	Use:          "delete <todo_id>",
+	Aliases:      []string{"rm", "del"},
+	Short:        "Delete the todo based on the given id",
+	Args:         cobra.ExactArgs(1),
+	RunE:         deleteTodo,
 	SilenceUsage: true,
 }
 
@@ -114,6 +125,22 @@ func toggleTodo(cmd *cobra.Command, args []string) error {
 	}
 
 	todos.ToggleComplete(id)
+
+	return nil
+}
+
+func deleteTodo(cmd *cobra.Command, args []string) error {
+	id, err := strconv.Atoi(args[0])
+
+	if err != nil {
+		return errors.New("you should pass the id of the todo as a number")
+	}
+
+	if err := todos.ValidateIndex(id); err != nil {
+		return err
+	}
+
+	todos.Delete(id)
 
 	return nil
 }
