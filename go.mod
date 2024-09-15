@@ -1,4 +1,4 @@
-module todoCLI
+module todos
 
 go 1.23.1
 

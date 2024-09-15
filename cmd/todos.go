@@ -4,7 +4,7 @@ import (
 	"errors"
 	"os"
 	"strconv"
-	"todoCLI/pkg"
+	"todos/pkg"
 
 	"github.com/spf13/cobra"
 )

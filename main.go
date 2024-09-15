@@ -1,10 +1,9 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package main
 
-import "todoCLI/cmd"
+import "todos/cmd"
 
 func main() {
 	cmd.Execute()
