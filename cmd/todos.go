@@ -25,9 +25,7 @@ func init() {
 
 	rootCmd.AddCommand(editCmd)
 	editCmd.Flags().StringP("title", "t", "", "New todo title")
-	editCmd.Flags().IntP("index", "i", 0, "Index of the todo to edit")
 	editCmd.MarkFlagRequired("title")
-	editCmd.MarkFlagRequired("index")
 
 	rootCmd.AddCommand(toggleCmd)
 }
@@ -45,9 +43,11 @@ var addCmd = &cobra.Command{
 }
 
 var editCmd = &cobra.Command{
-	Use:   "edit",
-	Short: "Edit a todo",
-	RunE:  editTodo,
+	Use:          "edit <todo_id> [--title|-t] <new_todo_title>",
+	Short:        "Edit a todo",
+	Args:         cobra.ExactArgs(1),
+	RunE:         editTodo,
+	SilenceUsage: true,
 }
 
 var toggleCmd = &cobra.Command{
@@ -83,7 +83,11 @@ func addTodo(cmd *cobra.Command, args []string) {
 
 func editTodo(cmd *cobra.Command, args []string) error {
 	title, _ := cmd.Flags().GetString("title")
-	id, _ := cmd.Flags().GetInt("index")
+	id, err := strconv.Atoi(args[0])
+
+	if err != nil {
+		return errors.New("you should pass the id of the todo as a number")
+	}
 
 	if title == "" {
 		return errors.New("the title cannot be empty")
