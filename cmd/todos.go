@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"os"
+	"strconv"
 	"todoCLI/pkg"
 
 	"github.com/spf13/cobra"
@@ -27,6 +28,8 @@ func init() {
 	editCmd.Flags().IntP("index", "i", 0, "Index of the todo to edit")
 	editCmd.MarkFlagRequired("title")
 	editCmd.MarkFlagRequired("index")
+
+	rootCmd.AddCommand(toggleCmd)
 }
 
 var listCmd = &cobra.Command{
@@ -45,6 +48,14 @@ var editCmd = &cobra.Command{
 	Use:   "edit",
 	Short: "Edit a todo",
 	RunE:  editTodo,
+}
+
+var toggleCmd = &cobra.Command{
+	Use:          "toggle <todo_id>",
+	Short:        "Toggle the status of completion of a todo",
+	Args:         cobra.ExactArgs(1),
+	RunE:         toggleTodo,
+	SilenceUsage: true,
 }
 
 func listTodos(cmd *cobra.Command, args []string) error {
@@ -83,6 +94,22 @@ func editTodo(cmd *cobra.Command, args []string) error {
 	}
 
 	todos.Edit(id, title)
+
+	return nil
+}
+
+func toggleTodo(cmd *cobra.Command, args []string) error {
+	id, err := strconv.Atoi(args[0])
+
+	if err != nil {
+		return errors.New("you should pass the id of the todo as a number")
+	}
+
+	if err := todos.ValidateIndex(id); err != nil {
+		return err
+	}
+
+	todos.ToggleComplete(id)
 
 	return nil
 }
